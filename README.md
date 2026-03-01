@@ -113,3 +113,66 @@ The website includes a custom CMS built specifically for managing the "Nieuws & 
    - **Username**: `admin`
    - **Password**: `admin123`
 3. Use the dashboard to Add, Edit, or Delete posts. Changes are saved to the SQLite database and immediately reflected on the Home and Nieuws pages.
+
+## ☁️ Deploying SVD NEB to AWS
+
+Your application consists of a **React Frontend**, a **Node.js/Express Backend**, a **SQLite Database**, and a **Local Image Uploads** directory. Because your database is a local file (`database.sqlite`) and images are saved directly to the disk (`/uploads`), your application requires a **stateful** environment.
+
+The most cost-effective and straightforward way to host this on AWS is using a single **EC2 Instance** running **Docker** and **Docker Compose**. We've already created the required Dockerfiles and `docker-compose.yml` structure for this!
+
+### 1. Required AWS Resources
+
+For a low-traffic NGO website CMS, the requirements are very lightweight:
+
+1. **EC2 Instance (Virtual Server)**: A `t3.micro` or `t3.small` instance running Ubuntu 22.04 LTS. This server will host your backend, frontend, and database. (A `t3.micro` is often covered by the AWS Free Tier for new accounts for 12 months).
+2. **EBS Volume (Storage)**: A 15GB - 20GB general-purpose SSD (`gp3`). This is where the operating system, your code, the SQLite database, and the uploaded gallery images will live.
+3. **Elastic IP**: A static, permanent IP address for your EC2 instance so your domain name never breaks if the server restarts.
+4. **Security Group (Firewall)**: Rules to allow inbound traffic on Port `80` (HTTP), Port `443` (HTTPS), and Port `22` (SSH).
+
+### 2. Step-by-Step Deployment Guide
+
+**Phase 1: Launch the EC2 Instance**
+1. Log into your **AWS Management Console** and navigate to **EC2**.
+2. Click **Launch Instance** (Ubuntu 22.04 LTS, `t3.micro`).
+3. Create a **Key Pair** and download the `.pem` file securely.
+4. Allow SSH, HTTP, and HTTPS traffic in network settings.
+5. Set storage to 15GB or 20GB `gp3` and Launch.
+
+**Phase 2: Connect to Your Server & Install Software**
+Connect via SSH using your `.pem` key:
+```bash
+ssh -i "svdneb-key.pem" ubuntu@<YOUR_EC2_PUBLIC_IP>
+```
+Install Docker, Docker Compose, and Nginx:
+```bash
+sudo apt update -y
+sudo apt install -y docker.io docker-compose git nginx
+sudo systemctl enable docker && sudo systemctl start docker
+sudo usermod -aG docker ubuntu
+```
+
+**Phase 3: Transfer the Code**
+Clone your private GitHub repository on the server:
+```bash
+git clone https://github.com/nithinjoseph372/svdneb.git
+cd svdneb
+```
+
+**Phase 4: Run the Application!**
+Spin up the `docker-compose.yml`:
+```bash
+sudo docker-compose up -d --build
+```
+
+**Phase 5: Set up HTTPS / SSL**
+Use Certbot to secure your webserver:
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d svdneb.nl -d www.svdneb.nl
+```
+
+### 3. Critical Backup Considerations ⚠️
+
+Because you are using **SQLite** and local **Image Uploads**, your entire database and gallery live as physical files on this single EC2 server. If the server is accidentally terminated or crashes permanently, **you will lose all news posts, admin accounts, and gallery images.**
+
+**You MUST implement a backup strategy.** The easiest method is to create an **Amazon S3 Bucket**, write a bash script to zip the `server/database.sqlite` file and the `server/uploads/` folder, and run a daily `cron` job to push that zip file to S3.

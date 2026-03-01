@@ -1,0 +1,229 @@
+.header-v2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 1.5rem 0;
+    transition: var(--transition);
+    background-color: transparent;
+    color: var(--white);
+}
+
+.header-v2.scrolled {
+    background-color: var(--black);
+    padding: 1rem 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-v2 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--white);
+}
+
+.brand-v2:hover {
+    color: var(--teal);
+}
+
+.brand-logo {
+    color: var(--teal);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-text span {
+    font-weight: 900;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.brand-text small {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+/* Desktop Nav */
+.desktop-nav-v2 {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .desktop-nav-v2 {
+        display: block;
+        margin-left: auto;
+        margin-right: 2rem;
+    }
+}
+
+.desktop-nav-v2 ul {
+    display: flex;
+    list-style: none;
+    gap: 2.5rem;
+}
+
+.desktop-nav-v2 a {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.desktop-nav-v2 a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--teal);
+    transition: width 0.3s ease;
+}
+
+.desktop-nav-v2 a:hover::after,
+.desktop-nav-v2 a.active::after {
+    width: 100%;
+}
+
+.desktop-nav-v2 a:hover,
+.desktop-nav-v2 a.active {
+    color: var(--teal);
+}
+
+/* Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .header-btn {
+        display: inline-flex;
+    }
+}
+
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    z-index: 1001;
+    /* Above overlay */
+    position: relative;
+}
+
+.mobile-menu-btn:hover {
+    color: var(--teal);
+}
+
+@media (min-width: 1024px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+/* Mobile Overlay Menu */
+.mobile-overlay-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--black);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    transform: translateY(-100%);
+}
+
+.mobile-overlay-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-inner ul {
+    list-style: none;
+    text-align: center;
+}
+
+.menu-inner li {
+    margin: 1.5rem 0;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.mobile-overlay-menu.open .menu-inner li {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Staggered animation delays for menu items */
+.mobile-overlay-menu.open .menu-inner li:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(2) {
+    transition-delay: 0.15s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(3) {
+    transition-delay: 0.2s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(4) {
+    transition-delay: 0.25s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(5) {
+    transition-delay: 0.3s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(6) {
+    transition-delay: 0.35s;
+}
+
+.mobile-overlay-menu.open .menu-inner li:nth-child(7) {
+    transition-delay: 0.4s;
+}
+
+.menu-inner a {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--white);
+    letter-spacing: 2px;
+}
+
+.menu-inner a:hover,
+.menu-inner a.active {
+    color: var(--teal);
+}

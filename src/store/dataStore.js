@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+export const API_URL = 'http://localhost:3000/api';
 
 export const getNews = async () => {
     try {
@@ -80,4 +80,78 @@ export const logoutAdmin = () => {
 
 export const isAuthenticated = () => {
     return sessionStorage.getItem('svd_admin_auth') === 'true' && sessionStorage.getItem('svd_admin_token') !== null;
+};
+
+// --- ADVANCED API WRAPPERS --- //
+
+export const getLoginActivities = async () => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/activities`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) return [];
+    return await res.json();
+};
+
+export const getUsers = async () => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) return [];
+    return await res.json();
+};
+
+export const addUser = async (username, password) => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ username, password })
+    });
+    return res.ok;
+};
+
+export const deleteUser = async (id) => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) throw new Error('Cannot delete self or failed');
+    return true;
+};
+
+export const getPageContent = async (pageId) => {
+    try {
+        const res = await fetch(`${API_URL}/content/${pageId}`);
+        if (!res.ok) return {};
+        return await res.json();
+    } catch (e) { return {}; }
+};
+
+export const savePageContent = async (pageId, contentObj) => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/content/${pageId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(contentObj)
+    });
+    return res.ok;
+};
+
+export const submitContactForm = async (data) => {
+    const res = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    return res.ok;
+};
+
+export const getContacts = async () => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/contacts`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) return [];
+    return await res.json();
+};
+
+export const getDonations = async () => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/donations`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) return [];
+    return await res.json();
 };

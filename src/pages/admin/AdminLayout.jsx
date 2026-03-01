@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LogOut, LayoutDashboard, FileText, Settings, Home as HomeIcon } from 'lucide-react';
+import { LogOut, LayoutDashboard, FileText, Settings, Home as HomeIcon, Users, MessageSquare, CreditCard } from 'lucide-react';
 import { logoutAdmin, isAuthenticated } from '../../store/dataStore';
 import AdminNews from './AdminNews';
+import AdminUsers from './AdminUsers';
+import AdminContacts from './AdminContacts';
+import AdminDonations from './AdminDonations';
+import AdminPages from './AdminPages';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
@@ -41,6 +45,18 @@ const AdminLayout = () => {
                         <FileText size={20} />
                         <span style={{ fontWeight: 600 }}>Nieuws & Blog</span>
                     </Link>
+                    <Link to="/admin/users" className={`admin-nav-link ${location.pathname.includes('/admin/users') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
+                        <Users size={20} />
+                        <span style={{ fontWeight: 600 }}>Gebruikers</span>
+                    </Link>
+                    <Link to="/admin/contacts" className={`admin-nav-link ${location.pathname.includes('/admin/contacts') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
+                        <MessageSquare size={20} />
+                        <span style={{ fontWeight: 600 }}>Contactberichten</span>
+                    </Link>
+                    <Link to="/admin/donations" className={`admin-nav-link ${location.pathname.includes('/admin/donations') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
+                        <CreditCard size={20} />
+                        <span style={{ fontWeight: 600 }}>Donaties</span>
+                    </Link>
                     <Link to="/admin/pages" className={`admin-nav-link ${location.pathname.includes('/admin/pages') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
                         <Settings size={20} />
                         <span style={{ fontWeight: 600 }}>Pagina Teksten</span>
@@ -63,7 +79,10 @@ const AdminLayout = () => {
                 <Routes>
                     <Route path="/" element={<AdminDashboardHome />} />
                     <Route path="/nieuws" element={<AdminNews />} />
-                    <Route path="/pages" element={<div style={{ padding: '3rem', background: 'white', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }}><h2>De Pagina Editor is nog in ontwikkeling.</h2><p>Gebruik de Nieuws & Blog editor om content te beheren.</p></div>} />
+                    <Route path="/users" element={<AdminUsers />} />
+                    <Route path="/contacts" element={<AdminContacts />} />
+                    <Route path="/donations" element={<AdminDonations />} />
+                    <Route path="/pages" element={<AdminPages />} />
                 </Routes>
             </main>
         </div>

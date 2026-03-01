@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { submitContactForm } from '../store/dataStore';
 import './Subpage.css';
 
 const Contact = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+    const [status, setStatus] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const success = await submitContactForm(formData);
+        setLoading(false);
+
+        if (success) {
+            setStatus('success');
+            setFormData({ name: '', email: '', subject: '', message: '' });
+        } else {
+            setStatus('error');
+        }
+    };
+
     return (
         <div className="subpage-v2">
             <div className="subpage-header-v2 banner-contact-v2">
@@ -43,26 +66,33 @@ const Contact = () => {
                         </div>
                     </div>
 
-                    <div className="contact-form-v2">
-                        <h2>STUUR EEN <span className="text-teal">BERICHT</span><span className="heading-dot-gold"></span></h2>
-                        <form onSubmit={(e) => e.preventDefault()} style={{ marginTop: '2rem' }}>
+                    <div className="contact-form-container" style={{ background: 'var(--white)', padding: '3rem', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
+                        <h2 style={{ marginTop: 0 }}>Stuur een <span className="text-teal">Bericht</span><span className="heading-dot"></span></h2>
+                        <p style={{ color: 'var(--dark-grey)', marginBottom: '2rem' }}>Vul het onderstaande formulier in en wij reageren zo spoedig mogelijk.</p>
+
+                        {status === 'success' && <div style={{ background: '#dcfce7', color: '#166534', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', fontWeight: 600 }}>Uw bericht is succesvol verzonden! Wij nemen spoedig contact met u op.</div>}
+                        {status === 'error' && <div style={{ background: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', fontWeight: 600 }}>Er is iets misgegaan. Probeer het later opnieuw.</div>}
+
+                        <form onSubmit={handleSubmit} className="contact-form">
                             <div className="form-group">
-                                <label htmlFor="name">Uw Naam</label>
-                                <input type="text" id="name" required />
+                                <label>Naam</label>
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="email">E-mailadres</label>
-                                <input type="email" id="email" required />
+                                <label>E-mailadres</label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="subject">Onderwerp</label>
-                                <input type="text" id="subject" required />
+                                <label>Onderwerp</label>
+                                <input type="text" name="subject" value={formData.subject} onChange={handleChange} />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="message">Uw Bericht</label>
-                                <textarea id="message" rows="5" required></textarea>
+                                <label>Bericht</label>
+                                <textarea name="message" value={formData.message} onChange={handleChange} rows="6" required></textarea>
                             </div>
-                            <button type="submit" className="btn btn-dark" style={{ width: '100%' }}>Verstuur Bericht</button>
+                            <button type="submit" className="btn btn-teal" disabled={loading} style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}>
+                                {loading ? 'Verzenden...' : 'Bericht Verzenden'}
+                            </button>
                         </form>
                     </div>
 

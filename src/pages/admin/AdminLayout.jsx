@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { LogOut, LayoutDashboard, FileText, Settings, Home as HomeIcon, Users, MessageSquare, CreditCard } from 'lucide-react';
+import { LogOut, LayoutDashboard, FileText, Settings, Home as HomeIcon, Users, MessageSquare, CreditCard, Image as ImageIcon } from 'lucide-react';
 import { logoutAdmin, isAuthenticated } from '../../store/dataStore';
 import AdminNews from './AdminNews';
 import AdminUsers from './AdminUsers';
 import AdminContacts from './AdminContacts';
 import AdminDonations from './AdminDonations';
 import AdminPages from './AdminPages';
+import AdminGallery from './AdminGallery';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
@@ -57,6 +58,10 @@ const AdminLayout = () => {
                         <CreditCard size={20} />
                         <span style={{ fontWeight: 600 }}>Donaties</span>
                     </Link>
+                    <Link to="/admin/gallery" className={`admin-nav-link ${location.pathname.includes('/admin/gallery') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
+                        <ImageIcon size={20} />
+                        <span style={{ fontWeight: 600 }}>Foto Galerij</span>
+                    </Link>
                     <Link to="/admin/pages" className={`admin-nav-link ${location.pathname.includes('/admin/pages') ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', color: 'rgba(255,255,255,0.7)', borderRadius: '8px', transition: 'var(--transition)' }}>
                         <Settings size={20} />
                         <span style={{ fontWeight: 600 }}>Pagina Teksten</span>
@@ -82,6 +87,7 @@ const AdminLayout = () => {
                     <Route path="/users" element={<AdminUsers />} />
                     <Route path="/contacts" element={<AdminContacts />} />
                     <Route path="/donations" element={<AdminDonations />} />
+                    <Route path="/gallery" element={<AdminGallery />} />
                     <Route path="/pages" element={<AdminPages />} />
                 </Routes>
             </main>

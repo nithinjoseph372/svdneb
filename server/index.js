@@ -3,13 +3,29 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const stripe = require('stripe')('sk_test_mock_key'); // Replace with real secret key in prod
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const db = require('./db.js');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const JWT_SECRET = 'svdneb-secret-key-123'; // In production, move to Environment Variable
+
+// --- MULTER SETUP --- //
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
 // --- MIDDLEWARE --- //
 const authenticateToken = (req, res, next) => {
@@ -175,6 +191,48 @@ app.put('/api/content/:pageId', authenticateToken, (req, res) => {
                 res.json({ success: true });
             });
         }
+    });
+});
+
+// --- GALLERY ROUTES --- //
+app.get('/api/gallery', (req, res) => {
+    db.all('SELECT * FROM gallery ORDER BY timestamp DESC', [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.post('/api/gallery', authenticateToken, upload.single('image'), (req, res) => {
+    const { title } = req.body;
+
+    if (!req.file) return res.status(400).json({ error: 'No image provided' });
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    db.run('INSERT INTO gallery (title, image_url) VALUES (?, ?)', [title, imageUrl], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, id: this.lastID, title, imageUrl });
+    });
+});
+
+app.delete('/api/gallery/:id', authenticateToken, (req, res) => {
+    db.get('SELECT image_url FROM gallery WHERE id = ?', req.params.id, (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: 'Image not found' });
+
+        // Delete from database
+        db.run('DELETE FROM gallery WHERE id = ?', req.params.id, function (err) {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Delete file from disk (remove leading slash for correct path joining on Windows)
+            const cleanPath = row.image_url.startsWith('/') ? row.image_url.slice(1) : row.image_url;
+            const filepath = path.join(__dirname, cleanPath);
+            fs.unlink(filepath, (err) => {
+                if (err) console.error("Error unlinking image:", err);
+            });
+
+            res.json({ deleted: true });
+        });
     });
 });
 

@@ -22,6 +22,7 @@ const Header = () => {
         { name: 'Communiteiten', path: '/communiteiten' },
         { name: 'Apostolaat', path: '/apostolaat' },
         { name: 'Nieuws', path: '/nieuws' },
+        { name: 'Galerij', path: '/galerij' },
         { name: 'Steun ons', path: '/steun-ons' },
         { name: 'Contact', path: '/contact' }
     ];

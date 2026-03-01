@@ -81,6 +81,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
+        // Create Gallery Table
+        db.run(`CREATE TABLE IF NOT EXISTS gallery (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        image_url TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
         // Create Page Content Table (Dynamic content)
         db.run(`CREATE TABLE IF NOT EXISTS page_content (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

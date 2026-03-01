@@ -9,6 +9,7 @@ import Communiteiten from './pages/Communiteiten';
 import Apostolaat from './pages/Apostolaat';
 import Nieuws from './pages/Nieuws';
 import SteunOns from './pages/SteunOns';
+import Galerij from './pages/Galerij';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -32,6 +33,7 @@ function App() {
           <Route path="/communiteiten" element={<Communiteiten />} />
           <Route path="/apostolaat" element={<Apostolaat />} />
           <Route path="/nieuws" element={<Nieuws />} />
+          <Route path="/galerij" element={<Galerij />} />
           <Route path="/steun-ons" element={<SteunOns />} />
           <Route path="/contact" element={<Contact />} />
 

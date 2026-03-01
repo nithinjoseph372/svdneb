@@ -155,3 +155,29 @@ export const getDonations = async () => {
     if (!res.ok) return [];
     return await res.json();
 };
+
+// --- GALLERY --- //
+export const getGallery = async () => {
+    const res = await fetch(`${API_URL}/gallery`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return await res.json();
+};
+
+export const uploadGalleryImage = async (formData) => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/gallery`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData // Note: no Content-Type header so the browser sets the boundary automatically
+    });
+    return res.ok;
+};
+
+export const deleteGalleryImage = async (id) => {
+    const token = sessionStorage.getItem('svd_admin_token');
+    const res = await fetch(`${API_URL}/gallery/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return res.ok;
+};
